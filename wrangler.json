@@ -1,7 +1,7 @@
 {
   "compatibility_date": "2025-04-01",
   "main": "src/index.ts",
-  "name": "r2-explorer-template",
+  "name": "rag-momory-worker",
   "assets": {
     "directory": "node_modules/r2-explorer/dashboard",
     "binding": "ASSETS",
