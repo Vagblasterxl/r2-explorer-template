@@ -9,6 +9,8 @@ import { WebhookReceiver } from './modules/webhook-receiver';
 import { ImageOptimizer } from './modules/image-optimizer';
 import { AdminDashboard } from './modules/admin-dashboard';
 import { DiscordBot } from './modules/discord-bot';
+import { getSystemMonitorHUD } from './modules/hud-system';
+import { getDiscordHUD } from './modules/hud-discord';
 
 interface Env {
   bucket: R2Bucket;
@@ -28,11 +30,15 @@ export default {
 
     // Serve HUD interfaces
     if (path === '/hud/system') {
-      return await fetch(new URL('/src/hud/system-monitor.html', import.meta.url).href);
+      return new Response(getSystemMonitorHUD(), {
+        headers: { 'Content-Type': 'text/html' },
+      });
     }
 
     if (path === '/hud/discord') {
-      return await fetch(new URL('/src/hud/discord-hud.html', import.meta.url).href);
+      return new Response(getDiscordHUD(), {
+        headers: { 'Content-Type': 'text/html' },
+      });
     }
 
     // Admin Dashboard routes

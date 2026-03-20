@@ -26,7 +26,9 @@ export class ImageOptimizer {
     this.maxWidth = config.maxWidth || 2048;
     this.maxHeight = config.maxHeight || 2048;
     this.quality = config.quality || 85;
-    this.enableWebP = config.enableWebP ?? true;
+    // Disabled by default - requires actual image conversion implementation
+    // or Cloudflare Images subscription
+    this.enableWebP = config.enableWebP ?? false;
     this.enableAVIF = config.enableAVIF ?? false;
   }
 
@@ -121,6 +123,8 @@ export class ImageOptimizer {
 
   /**
    * Serve optimized image based on Accept header
+   * NOTE: Currently serves original image only. Enable WebP/AVIF conversion
+   * by implementing createVariants() or using Cloudflare Images API
    */
   async serveOptimized(request: Request, key: string): Promise<Response> {
     const accept = request.headers.get('accept') || '';

@@ -35,7 +35,7 @@ export class DiscordBot {
   }
 
   /**
-   * Verify Discord signature
+   * Verify Discord signature using Ed25519
    */
   async verifySignature(request: Request): Promise<boolean> {
     const signature = request.headers.get('X-Signature-Ed25519');
@@ -45,11 +45,46 @@ export class DiscordBot {
       return false;
     }
 
-    const body = await request.clone().text();
+    try {
+      const body = await request.clone().text();
+      const message = timestamp + body;
 
-    // In production, use crypto.subtle to verify Ed25519 signature
-    // For now, this is a placeholder
-    return true;
+      // Import Discord public key (Ed25519)
+      const publicKey = await crypto.subtle.importKey(
+        'raw',
+        this.hexToBytes(this.publicKey),
+        {
+          name: 'Ed25519',
+          namedCurve: 'Ed25519',
+        },
+        false,
+        ['verify']
+      );
+
+      // Verify Ed25519 signature
+      const isValid = await crypto.subtle.verify(
+        'Ed25519',
+        publicKey,
+        this.hexToBytes(signature),
+        new TextEncoder().encode(message)
+      );
+
+      return isValid;
+    } catch (error) {
+      console.error('Discord signature verification failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Convert hex string to bytes
+   */
+  private hexToBytes(hex: string): Uint8Array {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+    }
+    return bytes;
   }
 
   /**
