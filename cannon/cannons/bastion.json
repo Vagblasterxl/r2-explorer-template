@@ -1,0 +1,29 @@
+{
+  "instance_target": "bastion",
+  "display_name": "BASTION",
+  "focus": "bare-metal and self-hosted sovereignty to a logical degree, tunneled through Cloudflare",
+  "salvo_size": 3,
+  "max_chain_depth": 1000,
+  "d1_id": "<SET_D1_ID>",
+  "hydrator_prompt": "Keep the BASTION pool at >=12 waiting tasks focused on self-hosted/bare-metal sovereignty for a solo operator. Principle: self-host what benefits from sovereignty/high-IO; keep edge+global on Cloudflare (hybrid). Never expose raw ports — tunnel everything. Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='bastion' AND status='waiting'. If <12, generate 8 specific IMPLEMENTATION tasks (harden/migrate/back-up/monitor). Priority 20-60. Insert, re-queue yourself priority 1, log pool.hydrated.",
+  "tasks": [
+    {"name":"reverse-proxy-local-dns","category":"network","priority":20,"estimated_minutes":30,
+     "prompt":"Stand up the 2026-standard secure local routing: an internal reverse proxy (Caddy/Traefik/nginx) plus a local DNS resolver, instead of router port-forwarding. Internal services get names + TLS via the proxy; nothing is exposed by opening router ports. Document the proxy config, the local DNS zone, and the routing map."},
+    {"name":"docker-ufw-bypass-fix","category":"security","priority":22,"estimated_minutes":25,
+     "prompt":"Close the Docker/UFW bypass flaw: Docker manipulates iptables and punches through UFW, so a port blocked in UFW but published by Docker is still exposed. Fix: bind sensitive container ports to 127.0.0.1 explicitly, use the reverse proxy for the only public surface, and add DOCKER-USER iptables rules to enforce host firewall intent. Verify with a port scan from another host. Document the rules."},
+    {"name":"cloudflare-tunnel-no-open-ports","category":"network","priority":24,"estimated_minutes":25,
+     "prompt":"Expose self-hosted services ONLY via Cloudflare Tunnel (cloudflared) — zero inbound ports open on the router/firewall. Install cloudflared, create a named tunnel, map hostnames to internal proxy targets, put Cloudflare Access in front for auth. Confirm the box has no open inbound ports from the public internet. Document the tunnel config and Access policies."},
+    {"name":"nextcloud-nvme","category":"selfhost","priority":30,"estimated_minutes":30,
+     "prompt":"Deploy Nextcloud on bare-metal NVMe as the sovereign Drive/Workspace complement (NVMe eliminates the usual PHP sluggishness). Containerized, behind the reverse proxy, exposed only via the tunnel. Enable server-side encryption, 2FA, and external storage to R2 if useful. This holds the data you want fully under your control. Document the deploy and backup hooks."},
+    {"name":"hybrid-architecture-split","category":"architecture","priority":26,"estimated_minutes":20,
+     "prompt":"Document the hybrid split explicitly: what runs on bare metal (high-IO databases, sensitive/sovereign data, heavy local compute) vs what stays on Cloudflare edge (global delivery, workers, R2, D1, DNS). Give a decision rule for placing any new workload. This is the 'to a logical degree' boundary — write it down so it's consistent. Output an architecture doc + diagram."},
+    {"name":"backups-3-2-1","category":"resilience","priority":32,"estimated_minutes":28,
+     "prompt":"Implement 3-2-1 backups for all self-hosted data (3 copies, 2 media, 1 offsite): local snapshot, second local/media copy, offsite encrypted to R2 (or B2). Automate with restic/borg, encrypt at rest, schedule, and — critically — TEST restores (a backup you haven't restored is a hope, not a backup). Document the schedule, encryption keys location, and a verified restore run."},
+    {"name":"host-monitoring-ids","category":"observability","priority":34,"estimated_minutes":25,
+     "prompt":"Set up host monitoring + intrusion detection + log aggregation on the bare-metal box: metrics (node exporter + a dashboard), IDS (CrowdSec or fail2ban + auditd), and centralized logs. Alert to the Slack #cannon-ops channel via RELAY's incoming webhook. Document what's watched and the alert routes."},
+    {"name":"os-baseline-hardening","category":"security","priority":28,"estimated_minutes":25,
+     "prompt":"Baseline-harden the host OS (Debian/Ubuntu): SSH key-only + no root login + non-standard exposure only via tunnel, automatic security updates, minimal package surface, UFW default-deny (with the Docker fix from the ufw task), disk encryption (LUKS) if the box is physically reachable, and a CIS-style checklist pass. Document the applied baseline."},
+    {"name":"secrets-vault-selfhosted","category":"secrets","priority":38,"estimated_minutes":22,
+     "prompt":"Run a self-hosted secrets vault (Infisical/Vault/OpenBao) on the bastion for local service credentials, sealed and backed up, accessible only via the internal network/tunnel. Bridge to Cloudflare secrets where workers need the same value. Coordinate with FORTRESS/CONDUIT secret inventories to keep one source of truth. Document the vault topology and unseal procedure."}
+  ]
+}

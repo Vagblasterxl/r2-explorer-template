@@ -1,0 +1,31 @@
+{
+  "instance_target": "relay",
+  "display_name": "RELAY",
+  "focus": "Slack internal bot and cross-service comms bridge (Slack, Google Workspace, cannon control)",
+  "salvo_size": 4,
+  "max_chain_depth": 1000,
+  "d1_id": "<SET_D1_ID>",
+  "hydrator_prompt": "Keep the RELAY pool at >=15 waiting tasks focused on the Slack internal bot and comms bridge. Anchors: build on Slack's NEW platform (classic apps retired 2026); solo = internal bot (one token, no OAuth/multi-tenancy); Business+ gives SSO/export/admin controls but NO DLP. Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='relay' AND status='waiting'. If <15, generate 10 specific IMPLEMENTATION tasks (bot features, integrations, cannon-control commands). Priority 20-60. Insert, re-queue yourself priority 1, log pool.hydrated.",
+  "tasks": [
+    {"name":"slack-internal-bot-scaffold","category":"slack","priority":20,"estimated_minutes":28,
+     "prompt":"Create a Slack internal bot on the NEW platform (not classic — classic apps retire 2026). At api.slack.com/apps: create app, add bot scopes (chat:write, commands, users:read, channels:read, reactions:read), install to your workspace, capture the bot token. Solo = internal only: one token, no OAuth, no multi-tenancy. Document scopes and the install."},
+    {"name":"slack-worker-host","category":"slack","priority":22,"estimated_minutes":28,
+     "prompt":"Host the Slack bot on a Cloudflare Worker (mirror the existing Discord-bot pattern). Verify EVERY inbound request with the Slack signing secret: compute HMAC-SHA256 over 'v0:'+timestamp+':'+body, compare to X-Slack-Signature using crypto.subtle.timingSafeEqual, reject stale timestamps (>5 min) to stop replay. Store the signing secret via `wrangler secret put`. Handle url_verification challenge. Document the verification code."},
+    {"name":"slack-event-subscriptions","category":"slack","priority":26,"estimated_minutes":22,
+     "prompt":"Wire Slack Event Subscriptions to the worker: subscribe to app_mention, message.channels (as needed), reaction_added. Respond to Slack's retry semantics idempotently (dedupe on event_id). Ack within 3 seconds, offload heavy work to a Queue. Document the subscribed events and the dedupe strategy."},
+    {"name":"slack-slash-cannon-control","category":"cannon-control","priority":30,"estimated_minutes":25,
+     "prompt":"Build slash commands that control the cannon fleet from Slack, hitting D1: '/pool status [instance]' (waiting/running/completed/failed counts), '/cannon pause <instance>' and '/cannon resume <instance>' (flip cannon_state <instance>_paused), '/burn report [instance]' (last hour of events). Restrict to your user ID. Document each command and its D1 queries."},
+    {"name":"slack-incoming-webhooks-fanout","category":"slack","priority":34,"estimated_minutes":18,
+     "prompt":"Set up incoming webhooks so any service can post to Slack channels one-way. Build a small fanout: a worker endpoint that accepts a normalized message and routes to the right channel's incoming webhook by topic. Use this as the notification spine for the whole stack. Document the routing table."},
+    {"name":"gw-slack-bridge","category":"integration","priority":38,"estimated_minutes":25,
+     "prompt":"Bridge Google Workspace to Slack. Install Google's official Slack apps (Calendar/Drive/Gmail) for native pieces, then add custom flows via the bot: meeting start -> channel reminder; Drive doc shared -> DM recipient; high-priority Gmail label applied -> post to a ticket channel. Implement at least two flows (Worker + Workspace Studio or Apps Script). Document the wiring."},
+    {"name":"cross-cannon-event-stream","category":"integration","priority":32,"estimated_minutes":22,
+     "prompt":"Make Slack the unified event stream for ALL cannons. Build a consumer that tails the events table (or receives pushes) and posts salvo.complete / task_failed / pool_empty / runaway_detected from fortress/conduit/ledger/relay/bastion/overmind into a #cannon-ops channel, color/emoji-coded by severity. One glance = fleet health. Document the mapping."},
+    {"name":"slack-businessplus-admin","category":"admin","priority":42,"estimated_minutes":18,
+     "prompt":"Configure Business+ admin controls: SAML SSO if you run an IdP, message-history export policy for compliance, and granular admin settings (who can install apps, create channels, invite guests). Note the gaps vs Enterprise+ (no native DLP, no multi-SAML) and document compensating controls (e.g. restrict app installs to admin-approved). Document the final admin config."},
+    {"name":"slack-ai-assistant-panel","category":"slack","priority":46,"estimated_minutes":22,
+     "prompt":"Build a bring-your-own-key AI assistant surface in Slack (55% of new Slack apps added AI since 2025; cost control matters). The bot answers in-thread using your AI Gateway endpoint (from CONDUIT), with per-day token caps and logging. Keep the key server-side in the worker. Document the cost controls and the prompt/response flow."},
+    {"name":"slack-approval-workflows","category":"workflow","priority":50,"estimated_minutes":20,
+     "prompt":"Build interactive approval workflows: the bot posts a message with Approve/Deny buttons (Block Kit) for gated actions (e.g. 'promote DMARC to reject?', 'deploy worker?'). On click, verify the interaction signature, record the decision to D1, and trigger or block the downstream action. This gives human-in-the-loop control over the fleet. Document one end-to-end approval."}
+  ]
+}
