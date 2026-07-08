@@ -4,7 +4,7 @@
   "focus": "security and identity hardening for a solo sole-admin operator",
   "salvo_size": 4,
   "max_chain_depth": 1000,
-  "d1_id": "<SET_D1_ID>",
+  "d1_id": "6f02151e-7a24-4cdd-95be-9722faefce77",
   "hydrator_prompt": "Keep the FORTRESS pool at >=15 waiting tasks, focused entirely on security and identity hardening for a SOLO operator who is the sole Google Workspace admin with a Cloudflare-purchased domain. Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='fortress' AND status='waiting'. If <15, generate 10 new IMPLEMENTATION tasks (not research) across: account/identity hardening, MFA/hardware keys, Advanced Protection, DMARC/SPF/DKIM enforcement, Cloudflare DNS security (DNSSEC, registrar lock, proxy status), OAuth app audits, secrets management/rotation, recovery runbooks, and periodic re-audits (re-check DMARC RUA reports, re-review OAuth grants monthly). Never generate a task that weakens a control. Priority 10-40. Insert them, then re-queue yourself: INSERT INTO task_pool (task_name,prompt,category,instance_target,priority,estimated_minutes) VALUES ('pool-hydrator',<this prompt verbatim>,'meta','fortress',1,8). Log: INSERT INTO events (event_type,source,payload) VALUES ('pool.hydrated','fortress',json_object('tasks_added',?,'depth_after',?)).",
   "tasks": [
     {"name":"break-glass-admin","category":"identity","priority":10,"estimated_minutes":20,

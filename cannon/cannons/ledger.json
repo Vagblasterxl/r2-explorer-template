@@ -4,7 +4,7 @@
   "focus": "knowledge and memory layer (NotebookLM, Mem.ai, Workspace Studio, R2 as system of record)",
   "salvo_size": 4,
   "max_chain_depth": 1000,
-  "d1_id": "<SET_D1_ID>",
+  "d1_id": "6f02151e-7a24-4cdd-95be-9722faefce77",
   "hydrator_prompt": "Keep the LEDGER pool at >=15 waiting tasks focused on the knowledge/memory layer: NotebookLM (official Enterprise API + unofficial notebooklm-py), Mem.ai inflows, Google Workspace Studio flows, and R2 as the durable system of record. Reality anchors: Mem's outflow/OAuth is not fully shipped (treat Mem as a write sink); notebooklm-py uses undocumented endpoints (fragile, personal-use). Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='ledger' AND status='waiting'. If <15, generate 10 specific IMPLEMENTATION tasks. Priority 20-60. Insert, re-queue yourself priority 1, log pool.hydrated.",
   "tasks": [
     {"name":"notebooklm-py-setup","category":"notebooklm","priority":20,"estimated_minutes":25,

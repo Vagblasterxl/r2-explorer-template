@@ -4,7 +4,7 @@
   "focus": "bare-metal and self-hosted sovereignty to a logical degree, tunneled through Cloudflare",
   "salvo_size": 3,
   "max_chain_depth": 1000,
-  "d1_id": "<SET_D1_ID>",
+  "d1_id": "6f02151e-7a24-4cdd-95be-9722faefce77",
   "hydrator_prompt": "Keep the BASTION pool at >=12 waiting tasks focused on self-hosted/bare-metal sovereignty for a solo operator. Principle: self-host what benefits from sovereignty/high-IO; keep edge+global on Cloudflare (hybrid). Never expose raw ports — tunnel everything. Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='bastion' AND status='waiting'. If <12, generate 8 specific IMPLEMENTATION tasks (harden/migrate/back-up/monitor). Priority 20-60. Insert, re-queue yourself priority 1, log pool.hydrated.",
   "tasks": [
     {"name":"reverse-proxy-local-dns","category":"network","priority":20,"estimated_minutes":30,

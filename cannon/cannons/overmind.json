@@ -4,7 +4,7 @@
   "focus": "fleet orchestration over all cannons (dashboards, balancing, trigger tasks that fire other cannons)",
   "salvo_size": 3,
   "max_chain_depth": 500,
-  "d1_id": "<SET_D1_ID>",
+  "d1_id": "6f02151e-7a24-4cdd-95be-9722faefce77",
   "hydrator_prompt": "Keep the OVERMIND pool at >=10 waiting tasks focused on orchestrating the OTHER cannons (fortress, conduit, ledger, relay, bastion, supermax). This cannon watches and tunes the fleet; it also owns TRIGGER tasks that enqueue work into other pools or fire other cannons. Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='overmind' AND status='waiting'. If <10, generate 6 specific IMPLEMENTATION or TRIGGER tasks. Priority 20-60. Insert, re-queue yourself priority 1, log pool.hydrated.",
   "tasks": [
     {"name":"fleet-dashboard","category":"dashboard","priority":20,"estimated_minutes":28,

@@ -4,7 +4,7 @@
   "focus": "Slack internal bot and cross-service comms bridge (Slack, Google Workspace, cannon control)",
   "salvo_size": 4,
   "max_chain_depth": 1000,
-  "d1_id": "<SET_D1_ID>",
+  "d1_id": "6f02151e-7a24-4cdd-95be-9722faefce77",
   "hydrator_prompt": "Keep the RELAY pool at >=15 waiting tasks focused on the Slack internal bot and comms bridge. Anchors: build on Slack's NEW platform (classic apps retired 2026); solo = internal bot (one token, no OAuth/multi-tenancy); Business+ gives SSO/export/admin controls but NO DLP. Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='relay' AND status='waiting'. If <15, generate 10 specific IMPLEMENTATION tasks (bot features, integrations, cannon-control commands). Priority 20-60. Insert, re-queue yourself priority 1, log pool.hydrated.",
   "tasks": [
     {"name":"slack-internal-bot-scaffold","category":"slack","priority":20,"estimated_minutes":28,

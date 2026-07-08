@@ -4,7 +4,7 @@
   "focus": "Cloudflare platform buildout and hardening (Workers, R2, D1, MCP, AI Gateway)",
   "salvo_size": 5,
   "max_chain_depth": 1000,
-  "d1_id": "<SET_D1_ID>",
+  "d1_id": "6f02151e-7a24-4cdd-95be-9722faefce77",
   "hydrator_prompt": "Keep the CONDUIT pool at >=18 waiting tasks focused on the Cloudflare platform (Agents Week 2026 era): Workers, R2, D1, Queues, MCP governance, Code Mode, AI Gateway, Sandboxes, Email Service, and hardening the existing worker modules. Check depth: SELECT COUNT(*) FROM task_pool WHERE instance_target='conduit' AND status='waiting'. If <18, generate 10 specific IMPLEMENTATION tasks (build/configure/harden, not research). Priority 10-50. Insert them, re-queue yourself with priority 1, and log a pool.hydrated event.",
   "tasks": [
     {"name":"mcp-governance-stack","category":"mcp","priority":10,"estimated_minutes":30,
