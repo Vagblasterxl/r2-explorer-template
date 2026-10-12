@@ -1,0 +1,143 @@
+<title>Drone Deck</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: a night-ops console — 5 labeled rows of launch cards, amber on carbon, dark-first */
+:root{
+  --bg:#17181c; --panel:#1f2127; --edge:#33363f; --fg:#e8e6df; --dim:#9a988f;
+  --amber:#ffb454; --amber-ink:#1a1206; --ok:#7fd98a;
+  --display:'Archivo Black',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f3f1ea; --panel:#ffffff; --edge:#d8d4c8; --fg:#23231f; --dim:#6d6a60;
+    --amber:#b4600a; --amber-ink:#fff7ec; --ok:#2f7d3b; color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f3f1ea; --panel:#ffffff; --edge:#d8d4c8; --fg:#23231f; --dim:#6d6a60;
+  --amber:#b4600a; --amber-ink:#fff7ec; --ok:#2f7d3b; color-scheme:light;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);margin:0;
+  padding-block:28px 64px;padding-inline:clamp(16px,4vw,40px);}
+.wrap{max-width:980px;margin:0 auto;}
+header h1{font-family:var(--display);font-size:clamp(28px,6vw,44px);margin:0;
+  letter-spacing:.01em;text-wrap:balance;}
+header .sub{color:var(--dim);margin:.4em 0 0;max-width:62ch;line-height:1.5;}
+header .sub code{font-family:var(--mono);color:var(--amber);font-size:.92em;}
+.row{margin-top:40px;}
+.rowlabel{font-family:var(--mono);font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--amber);border-bottom:1px solid var(--edge);
+  padding-bottom:6px;margin-bottom:14px;display:flex;justify-content:space-between;}
+.rowlabel span:last-child{color:var(--dim);letter-spacing:.05em;text-transform:none;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:6px;
+  padding:14px 14px 12px;display:flex;flex-direction:column;gap:8px;min-width:0;}
+.card .top{display:flex;align-items:baseline;gap:10px;}
+.card .num{font-family:var(--mono);font-size:12px;color:var(--dim);}
+.card .verb{font-family:var(--display);font-size:16px;letter-spacing:.02em;flex:1;min-width:0;}
+.card .desc{color:var(--dim);font-size:13px;line-height:1.45;margin:0;}
+.card .blank{color:var(--amber);font-family:var(--mono);font-size:11px;}
+.actions{display:flex;gap:8px;margin-top:auto;}
+button{font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer;
+  border-radius:4px;padding:8px 12px;border:1px solid var(--edge);}
+.copy{background:var(--amber);color:var(--amber-ink);border-color:transparent;flex:1;}
+.copy:focus-visible,.peek:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+.copy.done{background:var(--ok);color:#06130a;}
+.peek{background:transparent;color:var(--dim);}
+.prompt{display:none;font-family:var(--mono);font-size:12px;line-height:1.55;
+  background:var(--bg);border:1px dashed var(--edge);border-radius:4px;
+  padding:10px;white-space:pre-wrap;user-select:all;overflow-wrap:anywhere;}
+.card.open .prompt{display:block;}
+footer{margin-top:48px;color:var(--dim);font-size:13px;line-height:1.6;max-width:70ch;}
+footer a{color:var(--amber);}
+@media (prefers-reduced-motion:no-preference){
+  .copy{transition:background .15s ease;}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>DRONE DECK</h1>
+  <p class="sub">Twenty one-hit missions. Tap <code>COPY</code>, paste into any Claude on
+  any account, walk away. Buttons marked <code>&lt;BLANK&gt;</code> need one detail filled
+  in after pasting. Every prompt carries its own briefing — a cold agent executes it right.</p>
+</header>
+<div id="deck"></div>
+<footer>
+  Source of truth: <a href="https://github.com/Vagblasterxl/r2-explorer-template" target="_blank" rel="noopener">r2-explorer-template</a>
+  → <span style="font-family:var(--mono)">codex/DRONE_DECK.md</span>. The MUSIC and VIDEO
+  codices in the same folder hold the deep verbs these buttons chain together.
+</footer>
+</div>
+
+<script>
+const BOOT = "Read CLAUDE.MD and SKILLS_CODEX.md in github.com/Vagblasterxl/r2-explorer-template first (branch claude/update-claude-md-TMCMZ if unmerged). Output goes to the repo, the R2 bucket, or kenwsimmons@hotmail.com. Never merge PRs, never delete anything, never touch legal matters.\n\n";
+const ROWS = [
+["ROW 1 · DAILY DRIVERS","run these most mornings",[
+["MORNING","Inbox + PR summary + the one thing to do first.",false,"Summarize my unread AI/dev email, list my open PRs with their states, and end with the ONE thing you'd do first today."],
+["INBOX TRIAGE","48h of mail tagged ACT-NOW / THIS-WEEK / FYI / DELETE.",false,"Sweep my inbox's last 48 hours: tag every thread ACT-NOW / THIS-WEEK / FYI / DELETE-candidate. Touch nothing, just the list."],
+["PR SWEEP","Every open PR checked; small fixes pushed.",false,"Check every open PR on my repos: CI, conflicts, stale reviews. Fix only small safe things on their existing branches. Report the rest."],
+["SNAPSHOT","STATUS.md: done / mid-flight / blocked.",false,"Write or update STATUS.md in the hub repo: done, mid-flight, blocked. Three sections, newest first. Push it."],
+["WHAT CHANGED","Estate diffed against ESTATE.md, doc updated.",false,"Diff my estate against ESTATE.md: new repos, workers, sessions since it was written. Update the doc and push."]]],
+["ROW 2 · BUILDERS","point them at a thing",[
+["LAND A TASK","Clone, branch, build, verify, draft PR.",true,"Task: <DESCRIBE IT>. Clone the right repo, branch claude/<task>, build it, verify it runs, push, open a draft PR."],
+["SHIELD A REPO","CLAUDE.MD + gitignore + basic CI added.",true,"Repo: <NAME>. Add CLAUDE.MD (copy the hub's pattern), a .gitignore if missing, and a basic CI check. Draft PR."],
+["AUTOPSY","Reproduce, root-cause, smallest fix.",true,"<THING> is broken. Reproduce it, root-cause it, name the smallest fix, and apply it on a branch if it's under 20 lines."],
+["CLONE A WORKER","Dashboard-only Worker captured into a repo.",true,"Capture Cloudflare Worker <NAME>'s source and config into a new repo so it's never dashboard-only. Include a deploy README."],
+["PROTOTYPE","Single-file running prototype, sandbox branch.",true,"Build a single-file working prototype of <IDEA>. Ugly is fine, running is mandatory. Push to a sandbox branch with a 5-line README."]]],
+["ROW 3 · MUSIC BAY","full pipelines, one hit",[
+["SONG START→FINISH","Seed → lyrics → 3 gen prompts → arrangement.",true,"Also read codex/MUSIC_CODEX.md. Run the full Music Pipeline on this seed: <FEELING/STORY>. Deliver: lyrics (FORM of your choice, justified), 3 generator prompts (safe/weird/unhinged), arrangement grid, and append to MUSIC-LEDGER.md."],
+["ALBUM DAY","Tracklist arc, cover brief, liner, drop kit.",true,"Also read codex/MUSIC_CODEX.md. Here are my track titles/notes: <LIST>. Run ALBUM-ARC, COVER-BRIEF, LINER, DROP-KIT. One file per output, pushed."],
+["HOOK EMERGENCY","10 hooks forged, best 3 sharpened.",true,"Also read codex/MUSIC_CODEX.md. Song: <TITLE/PREMISE>. Run HOOK-FORGE then REWRITE-HARDER on the best 3. I need one that sticks, in 10 minutes."]]],
+["ROW 4 · VIDEO BAY","scene in, prompts out",[
+["SCENE → SHOTS","Shotlist → paste-ready Veo/Grok prompts.",true,"Also read codex/VIDEO_CODEX.md. Scene: <PASTE OR DESCRIBE>. Run SHOTLIST → PROMPT-PACK → CONTINUITY. Paste-ready video-generator prompts out."],
+["MUSIC VIDEO","Song mapped to camera, drop designed.",true,"Also read codex/MUSIC_CODEX.md and codex/VIDEO_CODEX.md. Track: <NAME, vibe, arrangement if known>. Run SYNC-MAP → DROP-SHOT → PROMPT-PACK → EDIT-A timeline."],
+["MAKE IT TRAVEL","Titles, thumbs, cold open, caption, cross-cuts.",true,"Also read codex/VIDEO_CODEX.md. Video or script: <PASTE/LINK>. Run TITLE-AB, THUMB-LAB, COLD-OPEN, CAPTION-PASS, CROSS-CUT. One kit, one file."]]],
+["ROW 5 · STORY & CLEANUP","long game",[
+["STORY ENGINE","Canon locked, scenes 1-3, scene 3 branched.",true,"Use the Story wing of SKILLS_CODEX.md. Premise: <ONE LINE>. Run CAST-CALL (lock CANON.md), then SCENE 1-3, then BRANCH scene 3 both ways. Each scene its own file, pushed."],
+["GRAVEYARD","60-day-dead list proposed. Executes nothing.",false,"List everything of mine untouched 60+ days (repos, workers, sessions you can see). Propose the archive list. Execute NOTHING."],
+["DEDUPE","Twin ideas found, canonical homes proposed.",false,"Find where the same idea lives twice across my repos and docs. Propose one canonical home per idea. Report only."],
+["SURPRISE ME","Agent picks the most useful safe 30-min task.",false,"Read the codices, look at the estate, and do the single most useful 30-minute task you can find that touches nothing destructive. Then tell me what you did and why it was the pick."]]]
+];
+
+const deck = document.getElementById('deck');
+let n = 0;
+for (const [label, hint, cards] of ROWS){
+  const row = document.createElement('section'); row.className='row';
+  row.innerHTML = `<div class="rowlabel"><span>${label}</span><span>${hint}</span></div>`;
+  const grid = document.createElement('div'); grid.className='grid';
+  for (const [verb, desc, hasBlank, body] of cards){
+    n++;
+    const full = BOOT + body;
+    const card = document.createElement('article'); card.className='card';
+    card.innerHTML = `
+      <div class="top"><span class="num">${String(n).padStart(2,'0')}</span>
+        <span class="verb">${verb}</span></div>
+      <p class="desc">${desc} ${hasBlank?'<span class="blank">&lt;BLANK&gt;</span>':''}</p>
+      <div class="actions">
+        <button class="copy">COPY</button>
+        <button class="peek">view</button>
+      </div>
+      <pre class="prompt"></pre>`;
+    card.querySelector('.prompt').textContent = full;
+    card.querySelector('.copy').addEventListener('click', async (e)=>{
+      const btn = e.currentTarget;
+      try { await navigator.clipboard.writeText(full); }
+      catch {
+        card.classList.add('open');
+        const sel = window.getSelection(), r = document.createRange();
+        r.selectNodeContents(card.querySelector('.prompt'));
+        sel.removeAllRanges(); sel.addRange(r);
+      }
+      btn.textContent='COPIED'; btn.classList.add('done');
+      setTimeout(()=>{btn.textContent='COPY';btn.classList.remove('done');},1400);
+    });
+    card.querySelector('.peek').addEventListener('click', ()=>card.classList.toggle('open'));
+    grid.appendChild(card);
+  }
+  row.appendChild(grid); deck.appendChild(row);
+}
+</script>
