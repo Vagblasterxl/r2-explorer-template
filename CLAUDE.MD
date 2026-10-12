@@ -1,5 +1,14 @@
 # R2-Explorer Template - Project Guide
 
+## Start Here (doc index)
+
+This repo doubles as the coordination hub for all of Ken's AI accounts. Read in this order:
+
+1. **CLAUDE.MD** (this file) — what this repo is and how to work in it
+2. **AI_PIPELINE.md** — the hub architecture: Gmail → Cloudflare Email Routing → R2 bucket, the 5-role pipeline, and the bootstrap block for new Claude sessions
+3. **ESTATE.md** — full inventory of all Cloudflare Workers, GitHub repos, and Claude sessions, with kill/keep lists
+4. **SLACK_STATUS.md** — copy-paste status block for Slack
+
 ## Project Overview
 
 This is a **Cloudflare R2-Explorer template** that provides a Google Drive-like web interface for managing Cloudflare R2 storage buckets. It's a Cloudflare Workers application that combines R2 storage with a modern file management UI.
