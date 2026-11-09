@@ -14,7 +14,9 @@ at any time.
   `polar_entitlements` through `discord_identities`.
 
 Start with **[`EXECUTE.md`](./EXECUTE.md)** — the step-by-step runbook,
-verification curls and rollback.
+verification curls and rollback. **[`AGENT-RUNBOOK.md`](./AGENT-RUNBOOK.md)**
+is the same work split into phases for two agents (Desktop Commander + Claude
+in Chrome) with fill-in REPORT blocks, so the owner only relays.
 
 Regenerate from a fresh live dump with `./build-patched.sh <dump.js>`; run the
 offline Patch B test with `node test-patchB.mjs`.
