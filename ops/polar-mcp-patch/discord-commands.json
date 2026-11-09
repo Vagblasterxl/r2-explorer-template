@@ -1,0 +1,107 @@
+[
+  {
+    "name": "omega",
+    "description": "Talk to the agent mesh",
+    "dm_permission": false,
+    "options": [
+      {
+        "name": "status",
+        "description": "Bus totals and whether this account is bound",
+        "type": 1
+      },
+      {
+        "name": "whoami",
+        "description": "The agent, Polar customer, and capabilities behind this account",
+        "type": 1
+      },
+      {
+        "name": "send",
+        "description": "Queue a message for an agent",
+        "type": 1,
+        "options": [
+          {
+            "name": "recipient",
+            "description": "Agent id to deliver to",
+            "type": 3,
+            "required": true
+          },
+          {
+            "name": "message",
+            "description": "Message body",
+            "type": 3,
+            "required": true
+          },
+          {
+            "name": "type",
+            "description": "Message type (default discord.relay)",
+            "type": 3,
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "inbox",
+        "description": "Open messages for an agent (defaults to your own)",
+        "type": 1,
+        "options": [
+          {
+            "name": "recipient",
+            "description": "Agent id (defaults to the agent you are bound to)",
+            "type": 3,
+            "required": false
+          },
+          {
+            "name": "limit",
+            "description": "How many to show (1-25, default 5)",
+            "type": 4,
+            "required": false
+          }
+        ]
+      },
+      {
+        "name": "ack",
+        "description": "Acknowledge a message addressed to your agent",
+        "type": 1,
+        "options": [
+          {
+            "name": "id",
+            "description": "Bus message id",
+            "type": 4,
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "bind",
+        "description": "Map a Discord account to an agent and Polar customer (operator or registry.admin)",
+        "type": 1,
+        "options": [
+          {
+            "name": "agent",
+            "description": "Agent id to bind to",
+            "type": 3,
+            "required": true
+          },
+          {
+            "name": "customer",
+            "description": "Polar customer id or external id — the source of the agent's capabilities",
+            "type": 3,
+            "required": false
+          },
+          {
+            "name": "user",
+            "description": "Discord user id to bind (defaults to you)",
+            "type": 3,
+            "required": false
+          },
+          {
+            "name": "username",
+            "description": "Label for the bound account, when binding someone else",
+            "type": 3,
+            "required": false
+          }
+        ]
+      }
+    ]
+  }
+]
