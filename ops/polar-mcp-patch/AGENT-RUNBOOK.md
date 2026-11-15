@@ -1,5 +1,13 @@
 # AGENT RUNBOOK — deploy the polar-mcp patch kit and wire Discord
 
+> **SUPERSEDED 2026-11-15 — STOP. Do not execute any phase below.** If you were
+> sent here by a kickoff prompt naming you DC or CiC, that prompt is retired:
+> report "runbook superseded" and do nothing else. The code to ship is now
+> branch `claude/polar-ncp-dynamic-variables-xIZK2` of
+> `Vagblasterxl/vite-react-template`, its Discord endpoints and secret names
+> differ from the ones below, and every upload is currently blocked by error
+> 10021. See [`README.md`](./README.md) and [`AGENT-LEE.md`](./AGENT-LEE.md).
+
 **Written for AI agents, not for Ken.** Two agents work it in parallel:
 
 - **DC** = Claude with Desktop Commander (shell and files on Ken's machine).

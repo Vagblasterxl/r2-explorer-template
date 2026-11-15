@@ -1,5 +1,19 @@
 # polar-mcp patch kit (Patch A + Patch B)
 
+> **SUPERSEDED 2026-11-15 — do not deploy anything from this folder.**
+> On 2026-11-14 the source of truth for `polar-mcp` moved to branch
+> `claude/polar-ncp-dynamic-variables-xIZK2` of `Vagblasterxl/vite-react-template`
+> (draft PR #4). That branch already fixes the webhook dedupe bug (Patch A's
+> job) and carries its own Discord commands at `/api/discord/*` (replacing
+> Patch B). `polar-mcp.index.PATCHED.js`, `EXECUTE.md` and `AGENT-RUNBOOK.md`
+> are kept as a record only.
+>
+> Still current in this folder:
+> - **[`AGENT-LEE.md`](./AGENT-LEE.md)** — the prompt for Cloudflare's dashboard
+>   agent, aimed at error 10021, the real reason nothing has shipped.
+> - **[`LIVE-HOTFIXES-TO-PORT.md`](./LIVE-HOTFIXES-TO-PORT.md)** — three fixes
+>   that are live today and missing from every newer build.
+
 Deployment kit for the **`polar-mcp`** Cloudflare Worker on the kenwsimmons
 account. It is parked in this repository because it is the writable repo this
 session had; it has nothing to do with R2 Explorer and can be moved to

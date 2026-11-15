@@ -1,5 +1,10 @@
 # EXECUTE — ship Patch A + Patch B to the live `polar-mcp` Worker
 
+> **SUPERSEDED 2026-11-15 — do not run these steps.** The code to ship is now
+> branch `claude/polar-ncp-dynamic-variables-xIZK2` of
+> `Vagblasterxl/vite-react-template`, and every upload is currently blocked by
+> error 10021. See [`README.md`](./README.md) and [`AGENT-LEE.md`](./AGENT-LEE.md).
+
 Target: Worker **`polar-mcp`**, Cloudflare account `ab02f4df…` (kenwsimmons),
 D1 **`polar-mcp-db`** (`f7d1f983-314f-4e81-8658-edf692a6eaa7`),
 URL `https://polar-mcp.kenwsimmons.workers.dev`.
