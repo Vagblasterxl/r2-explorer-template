@@ -1,5 +1,17 @@
 # Agent Lee brief — unblock `polar-mcp` (written 2026-11-15)
 
+> **Update 2026-11-18: optional now.** The laptop deploy in
+> [`DEPLOY-PROMPT.md`](./DEPLOY-PROMPT.md) handles error 10021 by itself (it
+> falls back to the verified copy of the database), so this prompt is only
+> worth running if you want Cloudflare's own explanation of 10021 or want
+> automatic deploys from GitHub. Two things changed since it was written:
+> the source branch at `dbf6437` now carries the three live fixes, so only
+> the parked versions are unsafe to deploy; and item 6 is partly answered,
+> since the two databases are identical on every field the API exposes
+> (version, region, read replication, jurisdiction, size) and on data. The
+> source branch's own `CLOUDFLARE_SETUP.md` also has Ask AI prompts for
+> connecting GitHub builds and adding the Discord secret.
+
 **Agent Lee** is Cloudflare's own assistant inside the dashboard. It reads the
 account directly and can change things through Cloudflare's API, but it shows an
 **Approve** button before every change and cannot skip it. It does not build

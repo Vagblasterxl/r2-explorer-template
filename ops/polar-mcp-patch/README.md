@@ -8,11 +8,16 @@
 > Patch B). `polar-mcp.index.PATCHED.js`, `EXECUTE.md` and `AGENT-RUNBOOK.md`
 > are kept as a record only.
 >
-> Still current in this folder:
-> - **[`AGENT-LEE.md`](./AGENT-LEE.md)** — the prompt for Cloudflare's dashboard
->   agent, aimed at error 10021, the real reason nothing has shipped.
-> - **[`LIVE-HOTFIXES-TO-PORT.md`](./LIVE-HOTFIXES-TO-PORT.md)** — three fixes
->   that are live today and missing from every newer build.
+> Still current in this folder (updated 2026-11-18):
+> - **[`DEPLOY-PROMPT.md`](./DEPLOY-PROMPT.md)** — one paste for the laptop
+>   agent: deploy the source branch, with rollback record, a fallback for
+>   upload error 10021, and proof checks. Includes the cloud pre-flight
+>   results for branch tip `dbf6437`.
+> - **[`AGENT-LEE.md`](./AGENT-LEE.md)** — optional prompt for Cloudflare's
+>   dashboard agent (why 10021 happens; automatic deploys from GitHub).
+> - **[`LIVE-HOTFIXES-TO-PORT.md`](./LIVE-HOTFIXES-TO-PORT.md)** — three live
+>   fixes that were missing from newer builds. Resolved on the branch at
+>   `dbf6437`; the parked versions still lack them.
 
 Deployment kit for the **`polar-mcp`** Cloudflare Worker on the kenwsimmons
 account. It is parked in this repository because it is the writable repo this

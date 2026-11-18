@@ -1,5 +1,18 @@
 # Three live fixes that the newer builds are missing
 
+> **RESOLVED on the source branch (checked 2026-11-18).** Branch
+> `claude/polar-ncp-dynamic-variables-xIZK2` at `dbf6437` carries all three
+> fixes, on both `/api/mcp` and the new `/mcp`. Confirmed by running that
+> commit locally: `GET` and `DELETE /api/mcp` return 405, an id-less
+> notification returns 202 with an empty body, and MCP `ping` returns
+> `{"jsonrpc":"2.0","id":1,"result":{}}`.
+>
+> **Still true:** the parked versions `94e9cc6f…` and `b73e133f…` lack all
+> three. Never deploy them. Deploy from the branch instead; see
+> [`DEPLOY-PROMPT.md`](./DEPLOY-PROMPT.md).
+>
+> The rest of this file is the 2026-11-15 finding, kept as the record.
+
 Found 2026-11-15 by diffing two downloads of `polar-mcp` from the Cloudflare API:
 
 | Download | What it is | Lines (wrapper stripped) |
